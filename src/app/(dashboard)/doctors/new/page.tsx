@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { DoctorForm } from "@/features/doctors/components/doctor-form";
 
 export const metadata = {
-  title: "Create Doctor | Medix Admin",
+  title: "Create Doctor | Aumedix Admin",
 };
 
 export default function CreateDoctorPage() {

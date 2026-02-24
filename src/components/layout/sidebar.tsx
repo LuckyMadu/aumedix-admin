@@ -24,7 +24,7 @@ export function Sidebar() {
   return (
     <aside className="flex w-64 flex-col bg-sidebar text-sidebar-foreground">
       <div className="flex h-16 items-center px-6">
-        <span className="text-xl font-bold text-white">Medix</span>
+        <span className="text-xl font-bold text-white">Aumedix</span>
         <span className="ml-1.5 rounded-sm bg-primary px-1.5 py-0.5 text-xxs font-semibold text-white">
           ADMIN
         </span>

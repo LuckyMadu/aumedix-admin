@@ -16,7 +16,7 @@ import type { Doctor } from "@/features/doctors/types";
 import { format } from "date-fns";
 
 export const metadata = {
-  title: "Dashboard | Medix Admin",
+  title: "Dashboard | Aumedix Admin",
 };
 
 export default async function DashboardPage() {
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <PageHeader
         title="Dashboard"
-        description="Welcome to the Medix Admin Portal. Here's an overview of your system."
+        description="Welcome to the Aumedix Admin Portal. Here's an overview of your system."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

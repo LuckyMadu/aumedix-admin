@@ -8,7 +8,7 @@ import { DoctorTableSkeleton } from "@/features/doctors/components/doctor-table-
 import { doctorService } from "@/features/doctors/services/doctor-service";
 
 export const metadata = {
-  title: "Doctors | Medix Admin",
+  title: "Doctors | Aumedix Admin",
 };
 
 export default function DoctorsPage() {

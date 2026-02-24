@@ -3,8 +3,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "Medix Admin",
-  description: "Medix Healthcare Administration Portal",
+  title: "Aumedix Admin",
+  description: "Aumedix Healthcare Administration Portal",
 };
 
 export default function RootLayout({
