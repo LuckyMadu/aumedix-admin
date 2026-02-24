@@ -21,18 +21,6 @@ export default function LoginPage() {
         </div>
 
         <LoginForm />
-
-        <div className="rounded-lg border border-border-subtle bg-primary-50/50 p-4">
-          <p className="text-xs font-medium text-primary-accent">
-            Dev Credentials
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Email: <code className="font-mono text-ink">admin@aumedix.com</code>
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Password: <code className="font-mono text-ink">admin123</code>
-          </p>
-        </div>
       </div>
     </div>
   );
