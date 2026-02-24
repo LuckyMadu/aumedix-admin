@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { getServerSession } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET ?? "medix-admin-dev-secret-change-in-production",
   pages: {
     signIn: "/login",
   },
