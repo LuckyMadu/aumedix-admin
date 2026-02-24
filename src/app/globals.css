@@ -1,26 +1,132 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Brand Colors */
+  --color-primary: #3C949E;
+  --color-primary-dark: #182D34;
+  --color-primary-accent: #30646E;
+  --color-primary-50: #DBF1F2;
+  --color-primary-100: #BCE3E5;
+  --color-primary-900: #F1FAFA;
+  --color-ink: #2A474F;
+
+  /* Neutrals */
+  --color-neutral-25: #FAFAFA;
+  --color-neutral-50: #F3F3F3;
+  --color-neutral-75: #ABABAB;
+  --color-neutral-100: #E8E8E8;
+  --color-neutral-300: #D4D6DD;
+  --color-neutral-600: #71727A;
+  --color-neutral-700: #494A50;
+
+  /* Status */
+  --color-success: #3AC0A0;
+  --color-success-light: #D4F5EC;
+  --color-warning: #E86339;
+  --color-warning-light: #FFB37C;
+  --color-error: #ED3241;
+  --color-error-light: #FF616D;
+  --color-info: #4A90E2;
+
+  /* Semantic */
+  --color-border: #F3F3F3;
+  --color-border-subtle: #BCE3E5;
+  --color-border-input: #D4D6DD;
+  --color-ring: #3C949E;
+  --color-background: #FFFFFF;
+  --color-foreground: #000000;
+  --color-muted: #FAFAFA;
+  --color-muted-foreground: #71727A;
+  --color-accent: #DBF1F2;
+  --color-accent-foreground: #30646E;
+  --color-destructive: #ED3241;
+  --color-destructive-foreground: #FFFFFF;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #000000;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #000000;
+
+  /* Sidebar */
+  --color-sidebar: #182D34;
+  --color-sidebar-foreground: #FFFFFF;
+  --color-sidebar-accent: #30646E;
+  --color-sidebar-muted: rgba(255, 255, 255, 0.7);
+  --color-sidebar-border: rgba(255, 255, 255, 0.1);
+
+  /* Font Family */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+
+  /* Font Sizes */
+  --font-size-xxs: 0.625rem;
+  --font-size-xxs--line-height: 1.5;
+  --font-size-xs: 0.75rem;
+  --font-size-xs--line-height: 1.4;
+  --font-size-sm: 0.875rem;
+  --font-size-sm--line-height: 1.4;
+  --font-size-base: 1rem;
+  --font-size-base--line-height: 1.5;
+  --font-size-lg: 1.125rem;
+  --font-size-lg--line-height: 1.3;
+  --font-size-xl: 1.25rem;
+  --font-size-xl--line-height: 1.3;
+  --font-size-2xl: 1.5rem;
+  --font-size-2xl--line-height: 1.25;
+  --font-size-3xl: 1.75rem;
+  --font-size-3xl--line-height: 1.25;
+  --font-size-4xl: 2.25rem;
+  --font-size-4xl--line-height: 1.2;
+
+  /* Border Radius */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(188, 227, 229, 0.08);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  /* Animations */
+  --animate-fade-in: fade-in 200ms ease-out;
+  --animate-fade-out: fade-out 200ms ease-in;
+  --animate-slide-in: slide-in-right 300ms ease-out;
+  --animate-slide-out: slide-out-right 300ms ease-in;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@layer base {
+  *:focus-visible {
+    outline: 2px solid #3C949E;
+    outline-offset: 2px;
+    border-radius: 4px;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
 }

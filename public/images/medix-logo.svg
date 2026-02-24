@@ -1,0 +1,5 @@
+<svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="4" width="24" height="24" rx="6" fill="#3C949E"/>
+  <path d="M7 16L10 12L14 18L17 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="30" y="23" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#182D34">Medix</text>
+</svg>
