@@ -13,6 +13,11 @@ import {
   ShieldCheck,
   ShieldX,
   Activity,
+  Globe,
+  Video,
+  Plane,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Doctor } from "../types";
@@ -149,6 +154,8 @@ export function DoctorDetailTabs({ doctor }: DoctorDetailTabsProps) {
               </div>
             </CardContent>
           </Card>
+
+          <MedicalTourismReadiness doctor={doctor} />
         </div>
       </TabsContent>
 
@@ -183,6 +190,77 @@ export function DoctorDetailTabs({ doctor }: DoctorDetailTabsProps) {
         </Card>
       </TabsContent>
     </Tabs>
+  );
+}
+
+function MedicalTourismReadiness({ doctor }: { doctor: Doctor }) {
+  const hasTele =
+    doctor.consultationType === "Telemedicine" ||
+    doctor.consultationType === "Both";
+  const isReady = doctor.verify && doctor.isActive && hasTele;
+
+  const criteria = [
+    { label: "Verified by Aumedix", met: doctor.verify },
+    { label: "Account is active", met: doctor.isActive },
+    { label: "Telemedicine enabled", met: hasTele },
+  ];
+
+  const metCount = criteria.filter((c) => c.met).length;
+
+  return (
+    <Card
+      className={`md:col-span-2 ${isReady ? "border-primary-100" : ""}`}
+    >
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Globe className="h-5 w-5 text-primary" />
+            <CardTitle>International Patient Readiness</CardTitle>
+          </div>
+          {isReady ? (
+            <Badge variant="info" className="gap-1">
+              <Plane className="h-3 w-3" />
+              Ready
+            </Badge>
+          ) : (
+            <Badge variant="default">Not Ready</Badge>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-xs text-muted-foreground">
+          Doctors who are verified, active, and offer telemedicine can serve
+          international patients — a key driver for medical tourism growth.
+        </p>
+
+        <div className="space-y-2">
+          {criteria.map((c) => (
+            <div key={c.label} className="flex items-center gap-2">
+              {c.met ? (
+                <CheckCircle2 className="h-4 w-4 text-success" />
+              ) : (
+                <XCircle className="h-4 w-4 text-neutral-300" />
+              )}
+              <span
+                className={`text-sm ${c.met ? "text-ink" : "text-muted-foreground"}`}
+              >
+                {c.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2 rounded-lg bg-primary-50 px-3 py-2">
+          <Video className="h-4 w-4 text-primary" />
+          <span className="text-xs text-primary">
+            {metCount}/{criteria.length} criteria met
+            {isReady
+              ? " — This doctor can attract international patients."
+              : " — Complete all criteria to unlock medical tourism visibility."}
+          </span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

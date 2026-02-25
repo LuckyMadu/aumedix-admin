@@ -12,7 +12,7 @@ import {
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Eye, ShieldCheck, ShieldX } from "lucide-react";
+import { ArrowUpDown, Eye, ShieldCheck, ShieldX, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SearchInput } from "@/components/shared/search-input";
@@ -102,10 +102,23 @@ export function DoctorTable({ doctors }: DoctorTableProps) {
         header: "Status",
         cell: ({ row }) => {
           const active = row.getValue("isActive") as boolean;
+          const doc = row.original;
+          const intlReady =
+            doc.verify &&
+            doc.isActive &&
+            (doc.consultationType === "Telemedicine" ||
+              doc.consultationType === "Both");
           return (
-            <Badge variant={active ? "success" : "error"}>
-              {active ? "Active" : "Inactive"}
-            </Badge>
+            <div className="flex items-center gap-1.5">
+              <Badge variant={active ? "success" : "error"}>
+                {active ? "Active" : "Inactive"}
+              </Badge>
+              {intlReady && (
+                <span title="International Patient Ready">
+                  <Globe className="h-3.5 w-3.5 text-primary" />
+                </span>
+              )}
+            </div>
           );
         },
       },
