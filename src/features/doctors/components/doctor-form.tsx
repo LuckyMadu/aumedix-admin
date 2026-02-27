@@ -59,10 +59,17 @@ export function DoctorForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...data,
-          workingHours: data.workingHours?.length ? data.workingHours : undefined,
-          slmcVerified: slmc.status === "valid",
-          slmcPractitionerName: slmc.practitioner?.fullName,
+          fullName: data.fullName,
+          licenseId: data.licenseId,
+          contactNumber: data.contactNumber,
+          email: data.email,
+          verify: true,
+          ...(data.specialty ? { specialty: data.specialty } : {}),
+          ...(data.clinicName ? { clinicName: data.clinicName } : {}),
+          ...(data.yearsOfExperience != null ? { yearsOfExperience: data.yearsOfExperience } : {}),
+          ...(data.appointmentDuration != null ? { appointmentDuration: data.appointmentDuration } : {}),
+          ...(data.consultationType ? { consultationType: data.consultationType } : {}),
+          ...(data.workingHours?.length ? { workingHours: data.workingHours } : {}),
         }),
       });
 
