@@ -1,6 +1,42 @@
 import { z } from "zod";
 
 const SRI_LANKAN_PHONE_REGEX = /^(\+94|0)?[7][0-9]{8}$/;
+const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+export const DAYS_OF_WEEK = [
+  "MON",
+  "TUE",
+  "WED",
+  "THU",
+  "FRI",
+  "SAT",
+  "SUN",
+] as const;
+
+export type DayOfWeek = (typeof DAYS_OF_WEEK)[number];
+
+export const DAY_LABELS: Record<DayOfWeek, string> = {
+  MON: "Monday",
+  TUE: "Tuesday",
+  WED: "Wednesday",
+  THU: "Thursday",
+  FRI: "Friday",
+  SAT: "Saturday",
+  SUN: "Sunday",
+};
+
+export const CONSULTATION_TYPES = ["In-Person", "Telemedicine", "Both"] as const;
+
+const workingHourSchema = z
+  .object({
+    day: z.enum(DAYS_OF_WEEK),
+    start: z.string().regex(TIME_REGEX, "Invalid time format (HH:MM)"),
+    end: z.string().regex(TIME_REGEX, "Invalid time format (HH:MM)"),
+  })
+  .refine((wh) => wh.start < wh.end, {
+    message: "End time must be after start time",
+    path: ["end"],
+  });
 
 export const doctorValidationRules = {
   fullNameSchema: z
@@ -42,21 +78,23 @@ export const doctorValidationRules = {
 
   clinicNameSchema: z.string().trim().optional().or(z.literal("")),
 
-  yearsOfExperienceSchema: z.coerce
-    .number()
-    .int()
-    .min(0, "Years of experience must be 0 or more")
-    .max(70, "Please enter a valid number")
+  yearsOfExperienceSchema: z
+    .union([
+      z.literal("").transform(() => undefined),
+      z.coerce.number().int().min(0, "Must be 0 or more").max(70, "Please enter a valid number"),
+    ])
     .optional(),
 
-  appointmentDurationSchema: z.coerce
-    .number()
-    .int()
-    .min(5, "Minimum 5 minutes")
-    .max(180, "Maximum 180 minutes")
+  appointmentDurationSchema: z
+    .union([
+      z.literal("").transform(() => undefined),
+      z.coerce.number().int().min(5, "Minimum 5 minutes").max(180, "Maximum 180 minutes"),
+    ])
     .optional(),
 
   consultationTypeSchema: z
-    .enum(["In-Person", "Telemedicine", "Both"])
+    .enum(CONSULTATION_TYPES)
     .optional(),
+
+  workingHoursSchema: z.array(workingHourSchema).optional().default([]),
 };
