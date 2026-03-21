@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { doctorService } from "@/features/doctors/services/doctor-service";
 import { DoctorDetailTabs } from "@/features/doctors/components/doctor-detail-tabs";
 import { VerifyDoctorBanner } from "@/features/doctors/components/verify-doctor-banner";
+import { DeleteDoctorButton } from "@/features/doctors/components/delete-doctor-button";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Globe } from "lucide-react";
@@ -60,6 +61,12 @@ export default async function DoctorDetailPage({
           <Badge variant={doctor.isActive ? "success" : "error"}>
             {doctor.isActive ? "Active" : "Inactive"}
           </Badge>
+          <DeleteDoctorButton
+            doctorId={doctor.id}
+            doctorName={doctor.fullName}
+            variant="button"
+            redirectOnSuccess
+          />
         </div>
       </PageHeader>
 

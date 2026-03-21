@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SearchInput } from "@/components/shared/search-input";
 import { VerifyDoctorButton } from "./verify-doctor-button";
+import { DeleteDoctorButton } from "./delete-doctor-button";
 import type { Doctor } from "../types";
 
 type FilterMode = "verified" | "all";
@@ -138,6 +139,10 @@ export function DoctorTable({ doctors }: DoctorTableProps) {
                 <Eye className="h-4 w-4" />
               </Button>
             </Link>
+            <DeleteDoctorButton
+              doctorId={row.original.id}
+              doctorName={row.original.fullName}
+            />
           </div>
         ),
       },
