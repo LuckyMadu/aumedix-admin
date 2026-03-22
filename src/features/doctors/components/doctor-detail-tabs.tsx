@@ -18,6 +18,9 @@ import {
   Plane,
   CheckCircle2,
   XCircle,
+  DollarSign,
+  CalendarOff,
+  PauseCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Doctor } from "../types";
@@ -83,9 +86,14 @@ export function DoctorDetailTabs({ doctor }: DoctorDetailTabsProps) {
               <DetailRow
                 icon={<Clock className="h-4 w-4" />}
                 label="Experience"
+                value={doctor.experience ?? "Not specified"}
+              />
+              <DetailRow
+                icon={<DollarSign className="h-4 w-4" />}
+                label="Consultation Fee"
                 value={
-                  doctor.yearsOfExperience != null
-                    ? `${doctor.yearsOfExperience} years`
+                  doctor.consultationFee != null
+                    ? `LKR ${doctor.consultationFee.toLocaleString()}`
                     : "Not specified"
                 }
               />
@@ -160,34 +168,145 @@ export function DoctorDetailTabs({ doctor }: DoctorDetailTabsProps) {
       </TabsContent>
 
       <TabsContent value="schedule">
-        <Card>
-          <CardHeader>
-            <CardTitle>Working Hours</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {doctor.workingHours?.length ? (
-              <div className="space-y-2">
-                {doctor.workingHours.map((wh) => (
-                  <div
-                    key={wh.day}
-                    className="flex items-center justify-between rounded-lg bg-neutral-25 px-4 py-3"
-                  >
-                    <span className="text-sm font-medium text-ink">
-                      {wh.day}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {wh.start} - {wh.end}
-                    </span>
-                  </div>
-                ))}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Working Hours</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {doctor.workingHours?.length ? (
+                <div className="space-y-2">
+                  {doctor.workingHours.map((wh) => (
+                    <div
+                      key={wh.day}
+                      className="flex items-center justify-between rounded-lg bg-neutral-25 px-4 py-3"
+                    >
+                      <span className="text-sm font-medium text-ink">
+                        {wh.day}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {wh.start} - {wh.end}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No working hours configured yet.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-primary" />
+                <CardTitle>Schedule Entries</CardTitle>
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No working hours configured yet.
-              </p>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              {doctor.scheduleEntries?.length ? (
+                <div className="space-y-2">
+                  {doctor.scheduleEntries.map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="flex items-center justify-between rounded-lg bg-neutral-25 px-4 py-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-ink">
+                          {entry.label}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(entry.date), "MMM dd, yyyy")} &middot; Max {entry.maxPatients} patients
+                        </p>
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {entry.start} - {entry.end}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No schedule entries configured yet.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <CalendarOff className="h-5 w-5 text-warning" />
+                <CardTitle>Holidays</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {doctor.holidays?.length ? (
+                <div className="space-y-2">
+                  {doctor.holidays.map((holiday, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between rounded-lg bg-neutral-25 px-4 py-3"
+                    >
+                      <span className="text-sm font-medium text-ink">
+                        {holiday.title}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {format(new Date(holiday.date), "MMM dd, yyyy")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No holidays defined.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <PauseCircle className="h-5 w-5 text-error" />
+                <CardTitle>Pause Periods</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {doctor.pausePeriods?.length ? (
+                <div className="space-y-2">
+                  {doctor.pausePeriods.map((period) => (
+                    <div
+                      key={period.id}
+                      className="flex items-center justify-between rounded-lg bg-neutral-25 px-4 py-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-ink">
+                          {period.reason}
+                        </p>
+                        {period.customReason && (
+                          <p className="text-xs text-muted-foreground">
+                            {period.customReason}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {format(new Date(period.startDate), "MMM dd, yyyy")} –{" "}
+                        {format(new Date(period.endDate), "MMM dd, yyyy")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No pause periods defined.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </TabsContent>
     </Tabs>
   );

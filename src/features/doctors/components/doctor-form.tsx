@@ -16,9 +16,12 @@ import {
 } from "@/components/ui/select";
 import { SlmcVerificationField } from "./slmc-verification-field";
 import { WorkingHoursField } from "./working-hours-field";
+import { ScheduleEntriesField } from "./schedule-entries-field";
+import { HolidaysField } from "./holidays-field";
+import { PausePeriodsField } from "./pause-periods-field";
 import { useSlmcVerification } from "../hooks/use-slmc-verification";
 import { useToast } from "@/hooks/use-toast";
-import { CONSULTATION_TYPES } from "../validation/rules";
+import { CONSULTATION_TYPES, EXPERIENCE_RANGES } from "../validation/rules";
 import {
   createDoctorSchema,
   type CreateDoctorFormValues,
@@ -45,10 +48,14 @@ export function DoctorForm() {
       email: "",
       specialty: "",
       clinicName: "",
-      yearsOfExperience: undefined,
+      experience: undefined,
+      consultationFee: undefined,
       appointmentDuration: undefined,
       consultationType: undefined,
       workingHours: [],
+      scheduleEntries: [],
+      holidays: [],
+      pausePeriods: [],
     },
   });
 
@@ -66,10 +73,14 @@ export function DoctorForm() {
           verify: true,
           ...(data.specialty ? { specialty: data.specialty } : {}),
           ...(data.clinicName ? { clinicName: data.clinicName } : {}),
-          ...(data.yearsOfExperience != null ? { yearsOfExperience: data.yearsOfExperience } : {}),
+          ...(data.experience ? { experience: data.experience } : {}),
+          ...(data.consultationFee != null ? { consultationFee: data.consultationFee } : {}),
           ...(data.appointmentDuration != null ? { appointmentDuration: data.appointmentDuration } : {}),
           ...(data.consultationType ? { consultationType: data.consultationType } : {}),
           ...(data.workingHours?.length ? { workingHours: data.workingHours } : {}),
+          ...(data.scheduleEntries?.length ? { scheduleEntries: data.scheduleEntries } : {}),
+          ...(data.holidays?.length ? { holidays: data.holidays } : {}),
+          ...(data.pausePeriods?.length ? { pausePeriods: data.pausePeriods } : {}),
         }),
       });
 
@@ -183,15 +194,52 @@ export function DoctorForm() {
             optional
             {...register("clinicName")}
           />
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-ink">
+              Experience
+              <span className="ml-1 text-xs font-normal text-muted-foreground">
+                (Optional)
+              </span>
+            </label>
+            <Controller
+              control={control}
+              name="experience"
+              render={({ field }) => (
+                <Select
+                  value={field.value ?? ""}
+                  onValueChange={(val) =>
+                    field.onChange(val === "" ? undefined : val)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select experience" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EXPERIENCE_RANGES.map((range) => (
+                      <SelectItem key={range} value={range}>
+                        {range}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.experience?.message && (
+              <p className="text-xs text-error" role="alert">
+                {errors.experience.message}
+              </p>
+            )}
+          </div>
           <FormField
-            label="Years of Experience"
+            label="Consultation Fee"
             type="number"
-            placeholder="e.g. 12"
+            placeholder="e.g. 2500"
             min={0}
-            max={70}
-            error={errors.yearsOfExperience?.message}
+            max={100000}
+            error={errors.consultationFee?.message}
+            helperText="Amount in LKR"
             optional
-            {...register("yearsOfExperience")}
+            {...register("consultationFee")}
           />
           <FormField
             label="Appointment Duration"
@@ -256,6 +304,68 @@ export function DoctorForm() {
                     day?: string;
                     start?: string;
                     end?: string;
+                  }> | undefined
+                }
+              />
+            )}
+          />
+        </div>
+
+        <div className="mt-6 border-t border-border pt-6">
+          <Controller
+            control={control}
+            name="scheduleEntries"
+            render={({ field }) => (
+              <ScheduleEntriesField
+                value={field.value ?? []}
+                onChange={field.onChange}
+                errors={
+                  errors.scheduleEntries as Array<{
+                    date?: string;
+                    start?: string;
+                    end?: string;
+                    label?: string;
+                    maxPatients?: string;
+                  }> | undefined
+                }
+              />
+            )}
+          />
+        </div>
+
+        <div className="mt-6 border-t border-border pt-6">
+          <Controller
+            control={control}
+            name="holidays"
+            render={({ field }) => (
+              <HolidaysField
+                value={field.value ?? []}
+                onChange={field.onChange}
+                errors={
+                  errors.holidays as Array<{
+                    date?: string;
+                    title?: string;
+                  }> | undefined
+                }
+              />
+            )}
+          />
+        </div>
+
+        <div className="mt-6 border-t border-border pt-6">
+          <Controller
+            control={control}
+            name="pausePeriods"
+            render={({ field }) => (
+              <PausePeriodsField
+                value={field.value ?? []}
+                onChange={field.onChange}
+                errors={
+                  errors.pausePeriods as Array<{
+                    startDate?: string;
+                    endDate?: string;
+                    reason?: string;
+                    customReason?: string;
                   }> | undefined
                 }
               />

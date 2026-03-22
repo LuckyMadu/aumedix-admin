@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const SRI_LANKAN_PHONE_REGEX = /^(\+94|0)?[7][0-9]{8}$/;
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 export const DAYS_OF_WEEK = [
   "MON",
@@ -26,6 +27,8 @@ export const DAY_LABELS: Record<DayOfWeek, string> = {
 };
 
 export const CONSULTATION_TYPES = ["In-Person", "Telemedicine", "Both"] as const;
+export const EXPERIENCE_RANGES = ["any", "0-5 yrs", "5-10 yrs", "10-15 yrs", "15+ yrs"] as const;
+export const PAUSE_REASONS = ["Vacation", "Sick Leave", "Training", "Personal", "Other"] as const;
 
 const workingHourSchema = z
   .object({
@@ -36,6 +39,38 @@ const workingHourSchema = z
   .refine((wh) => wh.start < wh.end, {
     message: "End time must be after start time",
     path: ["end"],
+  });
+
+const scheduleEntrySchema = z
+  .object({
+    id: z.string().min(1),
+    date: z.string().regex(DATE_REGEX, "Invalid date format (YYYY-MM-DD)"),
+    start: z.string().regex(TIME_REGEX, "Invalid time format (HH:MM)"),
+    end: z.string().regex(TIME_REGEX, "Invalid time format (HH:MM)"),
+    label: z.string().min(1, "Label is required").max(100),
+    maxPatients: z.coerce.number().int().min(1, "At least 1 patient").max(200, "Maximum 200 patients"),
+  })
+  .refine((entry) => entry.start < entry.end, {
+    message: "End time must be after start time",
+    path: ["end"],
+  });
+
+const holidaySchema = z.object({
+  date: z.string().regex(DATE_REGEX, "Invalid date format (YYYY-MM-DD)"),
+  title: z.string().min(1, "Title is required").max(100),
+});
+
+const pausePeriodSchema = z
+  .object({
+    id: z.string().min(1),
+    startDate: z.string().regex(DATE_REGEX, "Invalid date format (YYYY-MM-DD)"),
+    endDate: z.string().regex(DATE_REGEX, "Invalid date format (YYYY-MM-DD)"),
+    reason: z.string().min(1, "Reason is required"),
+    customReason: z.string().max(200).optional().or(z.literal("")),
+  })
+  .refine((p) => p.startDate <= p.endDate, {
+    message: "End date must be on or after start date",
+    path: ["endDate"],
   });
 
 export const doctorValidationRules = {
@@ -78,10 +113,14 @@ export const doctorValidationRules = {
 
   clinicNameSchema: z.string().trim().optional().or(z.literal("")),
 
-  yearsOfExperienceSchema: z
+  experienceSchema: z
+    .enum(EXPERIENCE_RANGES)
+    .optional(),
+
+  consultationFeeSchema: z
     .union([
       z.literal("").transform(() => undefined),
-      z.coerce.number().int().min(0, "Must be 0 or more").max(70, "Please enter a valid number"),
+      z.coerce.number().min(0, "Must be 0 or more").max(100000, "Please enter a valid amount"),
     ])
     .optional(),
 
@@ -97,4 +136,10 @@ export const doctorValidationRules = {
     .optional(),
 
   workingHoursSchema: z.array(workingHourSchema).optional().default([]),
+
+  scheduleEntriesSchema: z.array(scheduleEntrySchema).optional().default([]),
+
+  holidaysSchema: z.array(holidaySchema).optional().default([]),
+
+  pausePeriodsSchema: z.array(pausePeriodSchema).optional().default([]),
 };
