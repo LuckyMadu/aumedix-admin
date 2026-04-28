@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { getServerSession } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET ?? "medix-admin-dev-secret-change-in-production",
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
   },
@@ -34,20 +34,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // Dev credentials bypass — remove in production
-        if (
-          credentials.email === "admin@aumedix.com" &&
-          credentials.password === "admin123"
-        ) {
-          return {
-            id: "dev-admin-001",
-            email: "admin@aumedix.com",
-            name: "Dev Admin",
-            role: "super_admin",
-            accessToken: "dev-token-placeholder",
-          };
-        }
-
         try {
           const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/prod/v1/admin/auth/login`,
@@ -65,11 +51,11 @@ export const authOptions: NextAuthOptions = {
 
           const data = await res.json();
           return {
-            id: data.id,
+            id: data.email,
             email: data.email,
             name: data.name,
             role: data.role,
-            accessToken: data.token,
+            accessToken: data.accessToken,
           };
         } catch {
           return null;
